@@ -1,0 +1,37 @@
+# 🛑 Bỏ qua thư mục node_modules (chứa thư viện cài bằng npm)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 🛑 Bỏ qua file .env (chứa thông tin nhạy cảm như database URL, API keys)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# 🛑 Bỏ qua thư mục build (nếu có)
+dist/
+build/
+
+# 🛑 Bỏ qua file log
+logs
+*.log
+logs/*.log
+
+# 🛑 Bỏ qua cache và files tạm
+*.cache
+*.swp
+*.swo
+.DS_Store   
+
+# 🛑 Bỏ qua VSCode settings (nếu dùng VSCode)
+.vscode/
+
+# 🛑 Bỏ qua dữ liệu upload (nếu có thư mục chứa file upload)
+uploads/
+
+# 🛑 Bỏ qua coverage khi test
+coverage/
