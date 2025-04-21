@@ -1,12 +1,13 @@
 import {Request, Response} from "express";
 import Tasks from "../models/tasks.model"
-
+import panigationHelper from "../../../helpers/panigation";
+import searchHelper from "../../../helpers/search";
 //[GET] /api/v1/task
 export const index = async (req: Request, res: Response):Promise<void> => {
     interface Find {
         deleted: boolean,
         status? : string,
-        title? : unknown
+        title? : RegExp
     }
     
     let find: Find = {
@@ -19,12 +20,6 @@ export const index = async (req: Request, res: Response):Promise<void> => {
     }
     //end status
 
-    //find
-    // if(req.query.title){
-    //     find.title = req.query.title
-    // }
-    //end find
-
     //Sort  
     const sort: { [key: string]: any } = {};
     if(req.query.sortKey && req.query.sortValue){
@@ -32,7 +27,26 @@ export const index = async (req: Request, res: Response):Promise<void> => {
         sort[sortKey] = req.query.sortValue;
     }
     //end Sort
-    const task = await Tasks.find(find).sort(sort);
+
+    //Panigation
+    const countTasks:number = await Tasks.countDocuments(find);
+    const objectPanigation = panigationHelper(
+        {
+            currentPage: 1,
+            limitItems: 2
+        },  
+        req.query,
+        countTasks
+    );
+    //End Panigation
+
+    //Search
+    let objectSearch = searchHelper(req.query);
+    if(req.query){
+        find.title = objectSearch.regex
+    }
+    //end search
+    const task = await Tasks.find(find).skip(objectPanigation.skipItems as number).limit(objectPanigation.limitItems).sort(sort);
     res.json(task)
 }
 
