@@ -2,7 +2,6 @@ import {Request, Response} from "express";
 import Tasks from "../models/tasks.model"
 import panigationHelper from "../../../helpers/panigation";
 import searchHelper from "../../../helpers/search";
-import { Interface } from "readline";
 //[GET] /api/v1/task
 export const index = async (req: Request, res: Response):Promise<void> => {
     interface Find {

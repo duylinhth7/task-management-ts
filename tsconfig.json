@@ -6,7 +6,8 @@
       "outDir": "./dist",
       "moduleResolution": "node",
       "esModuleInterop": true,
-      "strict": true
+      // "strict": true,
+      "preserveConstEnums": true,
     },
     "include": ["**/*.ts"],
     "exclude": ["node_modules"]
