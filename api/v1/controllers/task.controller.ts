@@ -32,7 +32,6 @@ export const index = async (req: Request, res: Response):Promise<void> => {
         sort[sortKey] = req.query.sortValue;
     }
     //end Sort
-    console.log(find)
     const task = await Tasks.find(find).sort(sort);
     res.json(task)
 }
@@ -45,4 +44,29 @@ export const detail = async (req:Request, res: Response):Promise<void> => {
         deleted: false
     });
     res.json(task)
+}
+
+
+//[PATCH] /api/v1/task/change-status/:id
+export const changeStatus = async (req:Request, res:Response):Promise<void> => {
+    try {
+        const id:string = req.params.id;
+        const status:string = req.body.status;
+        if(req.body.status){
+            await Tasks.updateOne({
+                _id: id
+            }, {
+                status: status 
+            })
+        };
+        res.json({
+            code: 200,
+            message: "Cập nhật thành công!"
+        });
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Lỗi!"
+        })
+    }
 }
