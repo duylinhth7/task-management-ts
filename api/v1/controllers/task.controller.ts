@@ -131,3 +131,62 @@ export const changeMutil = async (req:Request, res:Response):Promise<void> => {
         })
     }
 }
+
+//[POST] api/v1/task/create
+export const create = async (req:Request, res:Response):Promise<void> => {
+    try {
+        const newTask = new Tasks(req.body);
+        await newTask.save();
+        res.json({
+            code: 200,
+            message: "Tạo mới thành công",
+            newTask: newTask
+        })
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Lỗi!"
+        })
+    }
+}
+
+// [PATCH] /api/v1/task/edit/:id
+export const edit = async (req:Request, res:Response):Promise<void> => {
+    try {
+        const id:string = req.params.id;
+        await Tasks.updateOne({
+            _id: id
+        }, req.body);
+        res.json({
+            code: 200,
+            message: "Chỉnh sửa thành công!"
+        })
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Lỗi!"
+        })
+    }
+}
+
+// [DELETE] /api/v1/task/delete/:id
+export const deleteTask = async (req:Request, res:Response):Promise<void> => {
+    try {
+        const id:string = req.params.id;
+        await Tasks.updateOne({
+            _id: id
+        }, {
+            deleted: true,
+            deletedAt: new Date
+        });
+        res.json({
+            code: 200,
+            message: "Xóa thành công!"
+        })
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Lỗi!"
+        })
+    }    
+}
