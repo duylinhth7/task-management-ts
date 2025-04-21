@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import Tasks from "../models/tasks.model"
 import panigationHelper from "../../../helpers/panigation";
 import searchHelper from "../../../helpers/search";
+import { Interface } from "readline";
 //[GET] /api/v1/task
 export const index = async (req: Request, res: Response):Promise<void> => {
     interface Find {
@@ -41,8 +42,8 @@ export const index = async (req: Request, res: Response):Promise<void> => {
     //End Panigation
 
     //Search
-    let objectSearch = searchHelper(req.query);
-    if(req.query){
+    if(req.query.keyword){
+        let objectSearch = searchHelper(req.query);
         find.title = objectSearch.regex
     }
     //end search
@@ -77,6 +78,52 @@ export const changeStatus = async (req:Request, res:Response):Promise<void> => {
             code: 200,
             message: "Cập nhật thành công!"
         });
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Lỗi!"
+        })
+    }
+}
+
+//[PATCH] api/v1/task/change-mutil
+export const changeMutil = async (req:Request, res:Response):Promise<void> => {
+    enum Key {
+        STATUS = "status",
+        DELETE = "delete"
+    };
+    try {
+        const ids: string[] = req.body.ids;
+        const key:string = req.body.key;
+        const value:string = req.body.value;
+        switch(key){
+            case Key.STATUS:
+                await Tasks.updateMany({
+                    _id: {$in: ids},
+                }, {
+                    status: value
+                });
+                res.json({
+                    code: 200,
+                    message: "Cập nhật thành công!"
+                }); 
+                break;
+            case Key.DELETE:
+                await Tasks.updateMany({
+                    _id: {$in: ids},
+                }, {
+                    deleted: true,
+                    deletedAt: new Date
+                });
+                res.json({
+                    code: 200,
+                    message: "Xóa thành công!"
+                }); 
+                break;
+            default:
+                break;
+        }
+
     } catch (error) {
         res.json({
             code: 400,
