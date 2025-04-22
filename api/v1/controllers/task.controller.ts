@@ -7,11 +7,16 @@ export const index = async (req: Request, res: Response):Promise<void> => {
     interface Find {
         deleted: boolean,
         status? : string,
-        title? : RegExp
+        title? : RegExp,
+        $or?: Array<Record<string, any>>; 
     }
     
     let find: Find = {
-        deleted: false
+        deleted: false,
+        $or: [
+            {createdBy: req["user"].id },
+            {listUser: req["user"].id}
+        ]
     }
 
     //status
@@ -134,6 +139,7 @@ export const changeMutil = async (req:Request, res:Response):Promise<void> => {
 //[POST] api/v1/task/create
 export const create = async (req:Request, res:Response):Promise<void> => {
     try {
+        req.body.createdBy = req["user"].id;
         const newTask = new Tasks(req.body);
         await newTask.save();
         res.json({
